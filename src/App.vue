@@ -1,66 +1,43 @@
 <template>
-  <input type="text" v-model="firstname">
-  <input type="text" v-model="secondname">
-  <p>{{fullname}}</p>
-  <div v-for="book in books" :key="book.id">
-    <h1>{{book.id}}</h1>
-    <h2>{{book.title}}</h2>
-    <h3>{{book.author}}</h3>
-  </div>
-  <div v-for="all in alldata" :key="all.id" class="fetch">
-    <h4>{{all.title}}</h4>
-    <p>{{all.body}}</p>
-  </div>
+  <p>
+    {{firstname}}
+  </p>
+  <p class="animate__animated animate__bounce">{{lastname}}</p>
+  <p>{{city}}</p>
+  <p>{{phone}}</p>
+  <p>{{po}}</p>
+  <ul>
+    <li v-for="post in posts" :key="post.id" class="animate__animated animate__bounce">
+      {{post.title}}
+    </li>
+  </ul>
 </template>
-
 <script>
-import { computed, ref } from '@vue/reactivity'
+import { onMounted } from '@vue/runtime-core';
+import {stateData,countryD} from './assets/stateData'
 export default {
-  setup() {
-    const firstname = ref('akib');
-    const secondname = ref('islam');
-    const alldata = ref([]);
-    const books = ref([
-      {id:1 , title: 'web design', author: 'noushed'},
-      {id:2 , title: 'graphic design', author: 'akib'},
-      {id:3 , title: 'web development', author: 'islam'}
-    ]);
-    console.log(books);
-    const fullname = computed(()=>{
-      return `${firstname.value} ${secondname.value}`;
-    });
-    // onMounted(()=>{
-    //   fetch('https://jsonplaceholder.typicode.com/posts')
-    //   .then(res=>res.json())
-    //   .then(data=>{
-    //     // console.log(data);
-    //     alldata.value = data.slice(0,10);
-    //   })
-    // })
-    (function fetchApi(){
-      fetch('https://jsonplaceholder.typicode.com/posts')
-      .then(res=>res.json())
-      .then(data=>{
-        alldata.value = data.slice(0,10);
-      })
-    })()
-    return {
-      firstname,
-      secondname,
-      fullname,
-      books,
-      alldata
-    }
+setup(){
+  let {firstname,lastname} = stateData();
+  let {city,phone,po,posts} = countryD();
+  onMounted(()=>{
+    fetch('https://jsonplaceholder.typicode.com/posts')
+    .then(res=>res.json())
+    .then(data=>{
+      posts.value = data;
+    })
+  });
+  return{
+    firstname,
+    lastname,
+    city,
+    phone,
+    po,
+    posts
   }
+}
 }
 </script>
 
 <style>
-.fetch{
-  color: green;
-  border: 1px solid black;
-  background: #ddd;
-  padding: 10px;
-  margin: 10px;
-}
+
 </style>
